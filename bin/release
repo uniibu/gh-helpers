@@ -26,7 +26,7 @@ function getLastCommits() {
 async function release() {
   processor.log('Bumping version');
   await exec('git add .');
-  await exec(`npm version ${releaseVer} -m "Release %s"`);
+  await exec(`npm version ${releaseVer} -m "Release %s"`, true);
 
   processor.log('Creating release tag');
   await exec('git fetch --tags');
