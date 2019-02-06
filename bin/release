@@ -5,9 +5,9 @@ require('dotenv').config({ path: resolve(__dirname, '../.env') })
 const exec = require('../lib/exec');
 const processor = require('../lib/processor');
 const args = processor.parse(process.argv);
-
-const publish = args[0];
-const otp = args[1];
+const version = args[0];
+const publish = args[1];
+const otp = args[2];
 const origin = 'origin';
 let branch = exec.execa.shellSync('git branch', { encoding: 'utf8' })
 branch = branch.stdout.replace(/^(\* )/g, '').replace('\n', '');
@@ -17,7 +17,7 @@ if (!process.env.GITHUB_TOKEN) {
 }
 
 async function release() {
-  let releaseArgs = '--git.commit --git.commitArgs="-S" --git.commitMessage="Release ${version}" --github.release --github.releaseName="Release ${version}" --git.push --git.tag --git.tagName="${version}" --git.tagAnnotation="Release ${version}" --git.tagArgs="-s" --non-interactive'
+  let releaseArgs = version + ' --git.commit --git.commitArgs="-S" --git.commitMessage="Release ${version}" --github.release --github.releaseName="Release ${version}" --git.push --git.tag --git.tagName="${version}" --git.tagAnnotation="Release ${version}" --git.tagArgs="-s" --non-interactive'
   if (publish && publish == 'publish') {
     if (otp) {
       releaseArgs += ` --npm.otp="${otp}"`
