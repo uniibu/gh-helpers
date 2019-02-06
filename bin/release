@@ -17,7 +17,7 @@ if (!process.env.GITHUB_TOKEN) {
 }
 
 async function release() {
-  let releaseArgs = version + ' --git.commit --git.commitArgs="-S" --git.commitMessage="Release ${version}" --github.release --github.releaseName="Release ${version}" --git.push --git.tag --git.tagName="${version}" --git.tagAnnotation="Release ${version}" --git.tagArgs="-s" --non-interactive'
+  let releaseArgs = version + ' --git.commit --git.commitArgs="-S" --github.release --git.push --git.tag --git.tagArgs="-s" --non-interactive'
   if (publish && publish == 'publish') {
     if (otp) {
       releaseArgs += ` --npm.otp="${otp}"`
