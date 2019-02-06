@@ -10,8 +10,8 @@ const branch = args[1];
 async function start() {
   await exec('git add .', false);
   await exec('yarn commit', true);
-  await exec(`git push ${origin} ${branch} --follow-tags`, true);
+  await exec(`git push ${origin} ${branch}`, true);
 }
 exec(`gh-pull ${origin} ${branch}`, false)
-.then(() => start())
-.then(process.exit);
+  .then(() => start())
+  .then(process.exit);
