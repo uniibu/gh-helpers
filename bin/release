@@ -17,10 +17,10 @@ async function release() {
   } else {
     releaseArgs += ' --no-npm.publish'
   }
-  await exec(`yarn release-it ${releaseArgs}`);
+  await exec(`${processor.npm} release-it ${releaseArgs}`);
 }
 
 
-exec(`gh-pull ${origin} ${branch}`)
+exec(`bin/pull ${origin} ${branch}`)
   .then(() => release())
   .then(process.exit);
