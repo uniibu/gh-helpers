@@ -9,7 +9,7 @@ const branch = args[1] || 'master';
 async function start() {
   processor.log('Pushing to Github')
   await exec('git add .', false);
-  await exec(`${processor.npm} commit`, true);
+  await exec(`npm run commit`, true);
   await exec(`git push ${origin} ${branch}`, true);
 }
 exec(`bin/pull ${origin} ${branch}`, false)
