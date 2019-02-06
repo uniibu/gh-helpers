@@ -13,4 +13,4 @@ await exec('yarn commit',true);
 await exec(`git push ${origin} ${branch} --follow-tags`,true);
 }
 
-start()
+start().then(process.exit)
