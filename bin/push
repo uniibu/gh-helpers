@@ -7,6 +7,10 @@ const args = processor.parseValidate(process.argv,2,err);
 const origin = args[0];
 const branch = args[1];
 
-exec('git add .',false);
-exec('yarn commit',true);
-exec(`git push ${origin} ${branch} --follow-tags`,true);
+async  function start() {
+await exec('git add .',false);
+await exec('yarn commit',true);
+await exec(`git push ${origin} ${branch} --follow-tags`,true);
+}
+
+start()
