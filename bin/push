@@ -11,6 +11,9 @@ async function start() {
   await exec('yarn commit', true);
   await exec(`git push ${origin} ${branch}`, true);
 }
-exec(`gh-pull ${origin} ${branch}`, false)
+exec(`bin/pull ${origin} ${branch}`, false)
   .then(() => start())
-  .then(process.exit);
+  .then(process.exit)
+  .catch(err => {
+    processor.sendError(err);
+  })
