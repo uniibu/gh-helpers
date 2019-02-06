@@ -2,8 +2,7 @@
 
 const exec = require('../lib/exec');
 const processor = require('../lib/processor');
-const err = 'Missing argument. Usage example: "gh-release [major,minor,patch] --publish"'
-const args = processor.parseValidate(process.argv, 1, err);
+const args = processor.parse(process.argv);
 
 const releaseVer = args[0];
 const publish = args[1];
