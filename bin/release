@@ -17,7 +17,7 @@ if (!process.env.GITHUB_TOKEN) {
 }
 
 async function release() {
-  let releaseArgs = '--git.commit --git.commitArgs="-S" --git.commitMessage="Release ${version}" --github.release --git.push --git.tag --git.tagName="${version}" --git.tagAnnotation="Release ${version}" --git.tagArgs="-s" --non-interactive'
+  let releaseArgs = '--git.commit --git.commitArgs="-S" --git.commitMessage="Release ${version}" --github.release --github.releaseName="Release ${version}" --git.push --git.tag --git.tagName="${version}" --git.tagAnnotation="Release ${version}" --git.tagArgs="-s" --non-interactive'
   if (publish && publish == 'publish') {
     if (otp) {
       releaseArgs += ` --npm.otp="${otp}"`
@@ -27,7 +27,7 @@ async function release() {
   } else {
     releaseArgs += ' --no-npm.publish'
   }
-  await exec(`npx release-it ${releaseArgs}`, true, true);
+  await exec(`npx --no-install release-it ${releaseArgs}`, true, true);
 }
 
 
