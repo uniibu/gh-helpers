@@ -11,7 +11,7 @@ let branch = exec.execa.shellSync('git branch', { encoding: 'utf8' })
 branch = branch.stdout.replace(/^(\* )/g, '').replace('\n', '');
 
 async function release() {
-  let releaseArgs = `${releaseVer}`
+  let releaseArgs = `${releaseVer} --git.commit --git.commitArgs="-S" --git.push --git-tag --git-tagArgs="-s"`
   if (publish && publish == '--publish') {
     releaseArgs += ' --npm.publish'
   } else {
