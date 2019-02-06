@@ -14,7 +14,7 @@ branch = branch.stdout.replace(/^(\* )/g, '').replace('\n', '');
 function getVersion() {
   return { version } = require(join(cwd, 'package.json'))
 }
-async function getLastCommits() {
+function getLastCommits() {
   processor.log('Fetching last commits');
   let commits = exec.execa.shellSync('git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%h %s"');
   if (commits.stderr) {
@@ -26,16 +26,15 @@ async function getLastCommits() {
 async function release() {
   processor.log('Bumping version');
   await exec('git add .');
-  await exec(`npm version ${releaseVer}`);
+  await exec(`npm version ${releaseVer} -m "Release %s"`);
 
   processor.log('Creating release tag');
   await exec('git fetch --tags');
   const lastCommits = getLastCommits();
   const tag = getVersion();
-  await exec(`git tag -a -m "Release ${tag.version}: ${lastCommits}" ${tag.version}`);
+  await exec(`git tag -s -a -m "Release ${tag.version}: ${lastCommits}" ${tag.version}`);
   await exec(`git add .`);
-  await exec(`git commit -m "Release ${tag.version}"`);
-  await exec(`git push --follow-tags`);
+  await exec(`git push ${origin} ${branch} --follow-tags`);
   if (publish && publish == '--publish') {
     await exec(`npm publish`, true);
   }
