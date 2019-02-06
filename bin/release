@@ -15,11 +15,12 @@ function getVersion() {
   return { version } = require(join(cwd, 'package.json'))
 }
 async function getLastCommits() {
+  processor.log('Fetching last commits');
   let commits = exec.execa.shellSync('git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%h %s"');
   if (commits.stderr) {
     commits = exec.execa.shellSync('git log  --pretty=format:"%h %s"')
   }
-  processor.log(stdout);
+  processor.log(commits.stdout);
   return commits.stdout.replace(/\n/g, ', ');
 }
 async function release() {
