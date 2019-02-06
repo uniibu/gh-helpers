@@ -8,7 +8,8 @@
   "license": "MIT",
   "private": false,
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "bin": {
     "gh-push": "bin/push",
@@ -20,7 +21,8 @@
     "commit": "gitcommit -Ssxyw",
     "pull": "bin/pull",
     "push": "bin/push",
-    "release": "bin/release"
+    "release": "bin/release",
+    "release-it": "release-it"
   },
   "dependencies": {
     "chalk": "^2.4.2",

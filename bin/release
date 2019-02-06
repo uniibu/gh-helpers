@@ -22,7 +22,7 @@ async function release() {
   } else {
     releaseArgs += ' --no-npm.publish'
   }
-  await exec(`${processor.npm} release-it ${releaseArgs}`, true);
+  await exec(`${processor.npm} release-it ${releaseArgs}`, true, true);
 }
 
 
