@@ -1,6 +1,6 @@
 {
   "name": "@unibtc/gh-helpers",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "git helpers for daily development",
   "main": "index.js",
   "repository": "git@github.com:uniibu/gh-helpers.git",
