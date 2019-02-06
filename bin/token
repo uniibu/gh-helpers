@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+const processor = require('../lib/processor');
+const args = processor.parse(process.argv);
+const gitToken = args[0];
+const {writeFileSync} = require('fs');
+const {resolve} = require('path');
+
+const envPath = resolve(__dirname,'../.env');
+
+writeFileSync(envPath,`GITHUB_TOKEN=${gitToken}`,'utf8');
+processor.log('Successfully stored token');

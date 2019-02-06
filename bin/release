@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const { resolve } = require('path');
+require('dotenv').config({ path: resolve(__dirname, '../.env') })
 const exec = require('../lib/exec');
 const processor = require('../lib/processor');
 const args = processor.parse(process.argv);
@@ -10,8 +12,12 @@ const origin = 'origin'
 let branch = exec.execa.shellSync('git branch', { encoding: 'utf8' })
 branch = branch.stdout.replace(/^(\* )/g, '').replace('\n', '');
 
+if (!process.env.GITHUB_TOKEN) {
+  processor.sendError('Missing Github Token. Run "gh-token xxxxx" to add your token');
+}
+
 async function release() {
-  let releaseArgs = `${releaseVer} ` + '--git.commit --git.commitArgs="-S" --git.push --git.tag --git.tagArgs="-s"'
+  let releaseArgs = `${releaseVer} ` + '--git.commit --git.commitArgs="-S" --github.release --git.push --git.tag --git.tagArgs="-s"'
   if (publish && publish == '--publish') {
     releaseArgs += ' --npm.publish'
   } else {

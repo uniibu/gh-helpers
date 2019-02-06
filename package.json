@@ -10,7 +10,8 @@
   "bin": {
     "gh-push": "bin/push",
     "gh-pull": "bin/pull",
-    "gh-release": "bin/release"
+    "gh-release": "bin/release",
+    "gh-token": "bin/token"
   },
   "scripts": {
     "commit": "gitcommit -Ssxyw",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "chalk": "^2.4.2",
+    "dotenv": "^6.2.0",
     "execa": "^1.0.0",
     "gitcommit": "^1.0.14",
     "release-it": "^10.0.7",
