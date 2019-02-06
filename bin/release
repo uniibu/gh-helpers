@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+
+const exec = require('../lib/exec');
+const processor = require('../lib/processor');
+const err = 'Missing argument. Usage example: "gh-release [major,minor,patch] --publish"'
+const args = processor.parseValidate(process.argv, 1, err);
+const { join } = require('path');
+const cwd = process.cwd();
+const version = args[0];
+const publish = args[1];
+const origin = 'origin'
+let branch = exec.execa.shellSync('git branch', { encoding: 'utf8' })
+branch = branch.stdout.replace(/^(\* )/g, '').replace('\n', '');
+function getVersion() {
+  return { version } = require(join(cwd, 'package.json'))
+}
+async function getLastCommits() {
+  let commits = exec.execa.shellSync('git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%h %s"');
+  if (commits.stderr) {
+    commits = exec.execa.shellSync('git log  --pretty=format:"%h %s"')
+  }
+  processor.log(stdout);
+  return commits.stdout.replace(/\n/g, ', ');
+}
+async function release() {
+  processor.log('Bumping version');
+  await exec('git add .');
+  await exec(`npm version ${version}`);
+
+  processor.log('Creating release tag');
+  await exec('git fetch --tags');
+  const lastCommits = getLastCommits();
+  const tag = getVersion();
+  await exec(`git tag -a -m "Release ${tag.version}: ${lastCommits}" ${tag.version}`);
+  await exec(`git add .`);
+  await exec(`git commit -m "Release ${tag.version}"`);
+  await exec(`git push --follow-tags`);
+  if (publish && publish == '--publish') {
+    await exec(`npm publish`, true);
+  }
+}
+
+
+exec(`gh-pull ${origin} ${branch}`)
+  .then(() => release())
+  .then(process.exit);

@@ -7,8 +7,16 @@
   "author": "unibtc <unibtc@gmail.com>",
   "license": "MIT",
   "private": false,
+  "bin": {
+    "gh-push": "bin/push",
+    "gh-pull": "bin/pull",
+    "gh-release": "bin/release"
+  },
   "scripts": {
-    "commit": "gitcommit -Ssxyw"
+    "commit": "gitcommit -Ssxyw",
+    "pull": "bin/pull",
+    "push": "bin/push",
+    "release": "bin/release"
   },
   "dependencies": {
     "chalk": "^2.4.2",
