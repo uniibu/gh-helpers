@@ -7,7 +7,8 @@ const processor = require('../lib/processor');
 const args = processor.parse(process.argv);
 
 const publish = args[0];
-const origin = 'origin'
+const otp = args[1];
+const origin = 'origin';
 let branch = exec.execa.shellSync('git branch', { encoding: 'utf8' })
 branch = branch.stdout.replace(/^(\* )/g, '').replace('\n', '');
 
@@ -16,9 +17,12 @@ if (!process.env.GITHUB_TOKEN) {
 }
 
 async function release() {
-  let releaseArgs = '--git.commit --git.commitArgs="-S" --github.release --git.push --git.tag --git.tagArgs="-s"'
+  let releaseArgs = '--git.commit --git.commitArgs="-S" --github.release --git.push --git.tag --git.tagArgs="-s" --non-interactive'
   if (publish && publish == '--publish') {
     releaseArgs += ' --npm.publish'
+    if (otp) {
+      releaseArgs += ` --npm.otp="${otp}"`
+    }
   } else {
     releaseArgs += ' --no-npm.publish'
   }
