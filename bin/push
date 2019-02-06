@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+const exec = require('../lib/exec')
+const processor = require('../lib/processor');
+const err = 'Missing argument. Usage example: "gh-pull origin master"'
+const args = processor.parseValidate(process.argv,2,err);
+const origin = args[0];
+const branch = args[1];
+
+exec('git add .',false);
+exec('yarn commit',true);
+exec(`git push ${origin} ${branch} --follow-tags`,true);

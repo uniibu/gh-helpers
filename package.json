@@ -1,0 +1,19 @@
+{
+  "name": "@unibtc/gh-helpers",
+  "version": "1.0.0",
+  "description": "git helpers for daily development",
+  "main": "index.js",
+  "repository": "git@github.com:uniibu/gh-helpers.git",
+  "author": "unibtc <unibtc@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "commit": "gitcommit -Ssxyw"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "execa": "^1.0.0",
+    "gitcommit": "^1.0.14",
+    "split-cmd": "^1.0.0"
+  }
+}

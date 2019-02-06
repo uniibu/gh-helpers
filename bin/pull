@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+const exec = require('../lib/exec')
+
+const processor = require('../lib/processor');
+const err = 'Missing argument. Usage example: "gh-pull origin master"'
+const args = processor.parseValidate(process.argv,2,err);
+const origin = args[0];
+const branch = args[1];
+
+exec.shell(`git fetch ${origin} --prune; git merge --ff-only ${origin}/${branch} || git rebase --preserve-merges ${origin}/${branch};`,false);
