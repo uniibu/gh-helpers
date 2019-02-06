@@ -27,7 +27,7 @@ async function release() {
   } else {
     releaseArgs += ' --no-npm.publish'
   }
-  await exec(`npm run release-it ${releaseArgs}`, true, true);
+  await exec(`npx release-it ${releaseArgs}`, true, true);
 }
 
 
