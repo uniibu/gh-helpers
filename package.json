@@ -22,6 +22,7 @@
     "chalk": "^2.4.2",
     "execa": "^1.0.0",
     "gitcommit": "^1.0.14",
+    "release-it": "^10.0.7",
     "split-cmd": "^1.0.0"
   }
 }

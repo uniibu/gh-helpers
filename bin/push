@@ -2,10 +2,9 @@
 
 const exec = require('../lib/exec')
 const processor = require('../lib/processor');
-const err = 'Missing argument. Usage example: "gh-pull origin master"'
-const args = processor.parseValidate(process.argv, 2, err);
-const origin = args[0];
-const branch = args[1];
+const args = processor.parse(process.argv);
+const origin = args[0] || 'origin';
+const branch = args[1] || 'master';
 
 async function start() {
   await exec('git add .', false);
