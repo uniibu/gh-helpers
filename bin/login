@@ -2,32 +2,33 @@
 
 const fs = require('fs');
 const path = require('path');
+const envPath = path.resolve(__dirname, '../.env');
+require('dotenv').config({ path: envPath });
 const crypto = require('crypto')
 const processor = require('../lib/processor');
 const prompts = require('prompts');
 const pkgjson = require('../package.json');
-const envPath = path.resolve(__dirname, '../.env');
 const ghGot = require('gh-got');
-
+const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 let confirmOverwrite = [{
   type: 'confirm',
-  name: 'value',
+  name: 'overwriteVal',
   message: 'You already have a token stored,\n Do you want to continue?',
   initial: true
 }]
 let confirmIntro = [{
   type: 'confirm',
-  name: 'value',
+  name: 'introVal',
   message: 'If you already have a Personal Access Token, you can simply add it via "gh-token xxtokenxx", Continue?',
   initial: true
 }]
 
-
 let authentication = [
   {
     type: 'text',
-    name: 'username',
-    message: 'What is your GitHub username?'
+    name: 'email',
+    message: 'What is your GitHub email?',
+    validate: value => emailRegex.test(value)
   },
   {
     type: 'password',
@@ -41,7 +42,7 @@ let authentication = [
     initial: 0
   }
 ];
-async function generateId(size = 6) {
+function generateId(size = 6) {
   return crypto.randomBytes(size).toString('hex');
 }
 async function login(email, password, otp) {
@@ -59,26 +60,56 @@ async function login(email, password, otp) {
     headers,
     body: {
       'scopes': ['repo'],
-      'note': `Gh-Helpers login: id-${generateId()}`
+      'note': `Gh-Helpers id-${generateId()}`
     }
   });
-  return body
+  return { body, headers }
 }
 async function start() {
   const questions = confirmIntro.concat(authentication);
-  const { username, password, otp } = await prompts(questions);
-  const resp = await login(username, password, otp);
+  const { email, password, otp, introVal } = await prompts(questions);
+  if (!introVal) {
+    process.exit(0)
+  }
+  const response = await login(email, password, otp);
+  const resp = response.body;
+  const headers = response.headers;
   if (resp.token) {
-    processor.log('Successfully fetch your token. Saving...');
+    processor.log('Successfully fetched your token. Saving...');
     if (process.env.GITHUB_TOKEN) {
-      await prompts(confirmOverwrite);
-      processToken(resp.token);
-      processor.log('Successfully stored your token')
+      const overwrite = await prompts(confirmOverwrite);
+      if (overwrite && !overwrite.overwriteVal) {
+        process.exit(0)
+      }
     }
+    if (process.env.GITHUB_TOKEN_ID) {
+      const deleted = await removeToken(headers);
+      if (!deleted) {
+        processor.log('Token was not successfully deleted');
+      } else {
+        processor.log('Successfully deleted previous token');
+      }
+    }
+    processToken(resp.token, resp.id);
+    processor.log('Successfully stored your new token')
   }
 }
-async function processToken(token) {
-  fs.writeFileSync(envPath, `GITHUB_TOKEN=${token}`, 'utf8');
+async function removeToken(headers) {
+  processor.log('Removing your previous token...');
+  if (headers['X-GitHub-OTP']) {
+    const { otp } = await prompts({
+      type: 'number',
+      name: 'otp',
+      message: 'Enter your otp/2fa:',
+      initial: 0
+    })
+    headers['X-GitHub-OTP'] = otp;
+  }
+  const resp = await ghGot(`authorizations/${process.env.GITHUB_TOKEN_ID}`, { method: 'DELETE', headers })
+  return resp.statusCode === 204;
+}
+async function processToken(token, tokenId) {
+  fs.writeFileSync(envPath, `GITHUB_TOKEN=${token}\nGITHUB_TOKEN_ID=${tokenId}`, 'utf8');
 }
 
 start().then(process.exit).catch(e => {
