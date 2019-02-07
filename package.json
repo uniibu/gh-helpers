@@ -25,11 +25,11 @@
     "release-it": "release-it"
   },
   "dependencies": {
+    "@unibtc/release-it": "^10.1.1",
     "chalk": "^2.4.2",
     "dotenv": "^6.2.0",
     "execa": "^1.0.0",
     "gitcommit": "^1.0.14",
-    "release-it": "^10.0.7",
     "split-cmd": "^1.0.0"
   }
 }
