@@ -6,7 +6,7 @@ const processor = require('../lib/processor');
 async function start() {
   processor.log('Commiting')
   await exec('git add .', false);
-  await exec(`npm run commit`, true);
+  await exec(`npx gitcommit -Ssxyw`, true);
 }
 
 start().then(process.exit)

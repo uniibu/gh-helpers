@@ -17,7 +17,7 @@ if (!process.env.GITHUB_TOKEN) {
 }
 
 async function release() {
-  let releaseArgs = version + ' --git.commit --git.commitArgs="-S" --github.release --git.push --git.tag --git.tagArgs="-s" --non-interactive'
+  let releaseArgs = `${version} --git.commit --git.commitArgs="-S" --github.release --git.push --git.tag --git.tagArgs="-s" --non-interactive`
   if (publish && publish == 'publish') {
     if (otp) {
       releaseArgs += ` --npm.otp="${otp}"`
@@ -27,10 +27,9 @@ async function release() {
   } else {
     releaseArgs += ' --no-npm.publish'
   }
-  await exec(`npx --no-install release-it ${releaseArgs}`, true, true);
+  await exec(`npx release-it ${releaseArgs}`, true, true);
 }
 
-
-exec(`bin/pull ${origin} ${branch}`)
+exec(`gh-pull ${origin} ${branch}`)
   .then(() => release())
   .then(process.exit);
