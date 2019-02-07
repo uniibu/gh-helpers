@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+const exec = require('../lib/exec')
+const processor = require('../lib/processor');
+
+async function start() {
+  processor.log('Commiting')
+  await exec('git add .', false);
+  await exec(`npm run commit`, true);
+}
+
+start().then(process.exit)
+  .catch(err => {
+    processor.sendError(err);
+  })

@@ -15,7 +15,8 @@
     "gh-push": "bin/push",
     "gh-pull": "bin/pull",
     "gh-release": "bin/release",
-    "gh-token": "bin/token"
+    "gh-token": "bin/token",
+    "gh-commit": "bin/commit"
   },
   "scripts": {
     "commit": "gitcommit -Ssxyw",
