@@ -62,10 +62,10 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@unibtc/release-it@^10.1.6":
-  version "10.1.6"
-  resolved "https://registry.yarnpkg.com/@unibtc/release-it/-/release-it-10.1.6.tgz#19291467b018e9a3500f58aa9e247740796011cb"
-  integrity sha512-WK0C68cwE3A/qVPCfqJoPZinlGK6WJUp+HUP3mZXGB4AFuzo6pHk4WOVxImMXWiFa79vZYuaaqlgA87YD3mxNA==
+"@unibtc/release-it@^10.1.7":
+  version "10.1.7"
+  resolved "https://registry.yarnpkg.com/@unibtc/release-it/-/release-it-10.1.7.tgz#d32d93973b13761fcef2cf81a7da1bf69dde3ecd"
+  integrity sha512-w1zy6hi380p2ruhI0Xlflho2aCzjrU97XJWTR36AJ1+elbCGQYwkC6VwRPx+HG19+a72xBvdq/Y/XVDqe+pnjA==
   dependencies:
     "@octokit/rest" "16.13.3"
     async-retry "1.2.3"
