@@ -1,0 +1,87 @@
+#!/usr/bin/env node
+
+const exec = require('../lib/exec');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto')
+const processor = require('../lib/processor');
+const prompts = require('prompts');
+const pkgjson = require('../package.json');
+const envPath = path.resolve(__dirname, '../.env');
+
+let confirmOverwrite = [{
+  type: 'confirm',
+  name: 'value',
+  message: 'You already have a token stored,\n Do you want to continue?',
+  initial: true
+}]
+let confirmIntro = [{
+  type: 'confirm',
+  name: 'value',
+  message: 'If you already have a Personal Access Token, you can simply add it via "gh-token xxtokenxx", Continue?',
+  initial: true
+}]
+
+
+let authentication = [
+  {
+    type: 'text',
+    name: 'username',
+    message: 'What is your GitHub username?'
+  },
+  {
+    type: 'password',
+    name: 'password',
+    message: 'Enter your password:'
+  },
+  {
+    type: 'number',
+    name: 'otp',
+    message: 'Enter your otp/2fa if applicable:',
+    initial: 0
+  }
+];
+async function generateId(size = 6) {
+  return crypto.randomBytes(size).toString('hex');
+}
+async function login(email, password, otp) {
+  let headers = {
+    'User-Agent': `Gh-Helpers / ${pkgjson.version}`,
+    'Authorization': `Basic ${Buffer.from(`${email}:${password}`).toString('base64')}`
+  };
+  if (otp) {
+    headers = Object.assign({}, headers, {
+      'X-GitHub-OTP': otp
+    });
+  }
+  const { body } = await ghGot('authorizations', {
+    json: true,
+    headers,
+    body: {
+      'scopes': ['repo'],
+      'note': `Gh-Helpers login: id-${generateId()}`
+    }
+  });
+  return body
+}
+async function start() {
+  const questions = confirmIntro.concat(authentication);
+  const { username, password, otp } = await prompts(questions);
+  const resp = await login(username, password, otp);
+  if (resp.token) {
+    processor.log('Successfully fetch your token. Saving...');
+    if (process.env.GITHUB_TOKEN) {
+      await prompts(confirmOverwrite);
+      processToken(resp.token);
+      processor.log('Successfully stored your token')
+    }
+  }
+}
+async function processToken(token) {
+  fs.writeFileSync(envPath, `GITHUB_TOKEN=${token}`, 'utf8');
+}
+
+start().then(process.exit).catch(e => {
+  console.error(e);
+  process.exit()
+})

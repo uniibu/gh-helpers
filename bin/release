@@ -13,7 +13,7 @@ let branch = exec.execa.shellSync('git branch', { encoding: 'utf8' })
 branch = branch.stdout.replace(/^(\* )/g, '').replace('\n', '');
 
 if (!process.env.GITHUB_TOKEN) {
-  processor.sendError('Missing Github Token. Run "gh-token xxxxx" to add your token');
+  processor.sendError('Missing Github Token. Run "gh-login" to login to your github and generate a token or "gh-token xxxxx" to add your token');
 }
 
 async function release() {
